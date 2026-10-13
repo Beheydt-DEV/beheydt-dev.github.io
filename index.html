@@ -159,26 +159,18 @@
 
     .accent { color: var(--accent); }
 
+    /* Status written as a code comment: // TODO: ... */
     .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin: 0.25rem 0 1.75rem;
-      padding: 0.35rem 0.9rem;
-      border: 1px solid var(--line);
-      border-radius: 999px;
+      margin: 0 0 1.5rem;
       color: var(--muted);
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      font-size: clamp(0.8125rem, 0.75rem + 0.3vw, 0.9375rem);
     }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2s ease-out infinite;
+    .status__slashes { color: var(--accent); }
+
+    .status__todo {
+      color: var(--fg);
+      font-weight: 700;
     }
 
     h1 {
@@ -259,13 +251,8 @@
 
     @keyframes blink { 50% { opacity: 0; } }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(224, 123, 57, 0.55); }
-      70%, 100% { box-shadow: 0 0 0 8px rgba(224, 123, 57, 0); }
-    }
-
     @media (prefers-reduced-motion: reduce) {
-      .cursor, .dot { animation: none; }
+      .cursor { animation: none; }
     }
   </style>
 </head>
@@ -284,9 +271,10 @@
     </div>
 
     <p class="status">
-      <span class="dot" aria-hidden="true"></span>
-      <span lang="fr">Site en construction</span>
-      <span lang="en">Under construction</span>
+      <span class="status__slashes" aria-hidden="true">//</span>
+      <span class="status__todo">TODO:</span>
+      <span lang="fr">site en construction</span>
+      <span lang="en">website under construction</span>
     </p>
 
     <h1><span lang="fr">Logiciel &amp; électronique,<br>du code au circuit</span><span lang="en">Software &amp; electronics,<br>from code to circuit</span><span class="cursor" aria-hidden="true"></span></h1>
