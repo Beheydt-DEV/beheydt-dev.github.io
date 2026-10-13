@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Pick FR or EN before first paint: ?lang= > saved choice > browser languages > EN.
+    (function () {
+      var supported = ["fr", "en"], lang = null;
+      try { lang = new URLSearchParams(location.search).get("lang"); } catch (e) {}
+      if (supported.indexOf(lang) < 0) { try { lang = localStorage.getItem("lang"); } catch (e) {} }
+      if (supported.indexOf(lang) < 0) {
+        lang = "en";
+        var prefs = navigator.languages || [navigator.language || ""];
+        for (var i = 0; i < prefs.length; i++) {
+          var p = String(prefs[i]).slice(0, 2).toLowerCase();
+          if (supported.indexOf(p) >= 0) { lang = p; break; }
+        }
+      }
+      document.documentElement.lang = lang;
+    })();
+  </script>
+
+  <title>Beheydt.DEV — Studio logiciel &amp; électronique</title>
+  <meta name="description" content="Studio de développement logiciel &amp; électronique dans le Grand Genève · Software &amp; electronics development studio in the Greater Geneva area.">
+  <meta name="theme-color" content="#111418">
+  <link rel="canonical" href="https://beheydt.dev/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://beheydt.dev/">
+  <meta property="og:site_name" content="Beheydt.DEV">
+  <meta property="og:title" content="Beheydt.DEV — Logiciel &amp; électronique, du code au circuit">
+  <meta property="og:description" content="Studio de développement logiciel &amp; électronique · Software &amp; electronics studio — Grand Genève.">
+  <meta property="og:image" content="https://beheydt.dev/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/jetbrains-mono-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+
+  <style>
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-style: normal;
+      font-weight: 100 800;
+      font-display: block;
+      src: url("assets/fonts/jetbrains-mono-latin-wght.woff2") format("woff2");
+    }
+
+    :root {
+      --bg: #111418;
+      --fg: #f2efe8;
+      --muted: #a9a59d;
+      --line: rgba(242, 239, 232, 0.14);
+      --accent: #e07b39;
+      --font: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      color-scheme: dark;
+    }
+
+    /* Only the active language is shown. */
+    html[lang="fr"] [lang="en"],
+    html[lang="en"] [lang="fr"] { display: none; }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: var(--accent); color: var(--bg); }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .top {
+      display: flex;
+      justify-content: flex-end;
+      padding: 20px 16px 0;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px;
+    }
+
+    .lang-switch button {
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      background: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+      cursor: pointer;
+      transition: color 0.15s, background-color 0.15s;
+    }
+
+    .lang-switch button:hover { color: var(--fg); }
+
+    .lang-switch button[aria-pressed="true"] {
+      color: var(--bg);
+      background: var(--fg);
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px 16px 48px;
+      max-width: 52rem;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Same proportions as the source logo: 240px mark / 36px wordmark / 24px gap. */
+    .logo {
+      --size: clamp(104px, 28vw, 168px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: calc(var(--size) * 0.1);
+      margin-bottom: 2.25rem;
+    }
+
+    .logo__mark {
+      display: flex;
+      align-items: baseline;
+      font-size: var(--size);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: calc(var(--size) * -0.0417);
+    }
+
+    .logo__word {
+      font-size: calc(var(--size) * 0.15);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .accent { color: var(--accent); }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0.25rem 0 1.75rem;
+      padding: 0.35rem 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-out infinite;
+    }
+
+    h1 {
+      margin: 0 0 1.25rem;
+      font-size: clamp(1.35rem, 0.6rem + 3.6vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 0.6em;
+      height: 0.13em;
+      margin-left: 0.06em;
+      background: var(--accent);
+      animation: blink 1.1s steps(1) infinite;
+    }
+
+    .lead {
+      max-width: 38rem;
+      margin: 0 0 2.25rem;
+      color: var(--muted);
+      font-size: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      text-wrap: pretty;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(242, 239, 232, 0.03);
+      color: var(--fg);
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .links a:hover {
+      border-color: var(--accent);
+      background: rgba(224, 123, 57, 0.08);
+    }
+
+    .links svg {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      fill: currentColor;
+      transition: color 0.15s;
+    }
+
+    .links a:hover svg { color: var(--accent); }
+
+    .foot {
+      padding: 0 16px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 480px) {
+      .links { flex-direction: column; width: 100%; max-width: 18rem; }
+      .links a { width: 100%; justify-content: center; }
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(224, 123, 57, 0.55); }
+      70%, 100% { box-shadow: 0 0 0 8px rgba(224, 123, 57, 0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cursor, .dot { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="lang-switch" role="group" aria-label="Langue / Language">
+      <button type="button" data-set-lang="fr" aria-label="Français">FR</button>
+      <button type="button" data-set-lang="en" aria-label="English">EN</button>
+    </div>
+  </header>
+
+  <main class="hero">
+    <div class="logo" role="img" aria-label="Beheydt.DEV">
+      <div class="logo__mark"><span>b</span><span class="accent">_</span></div>
+      <div class="logo__word">beheydt<span class="accent">.dev</span></div>
+    </div>
+
+    <p class="status">
+      <span class="dot" aria-hidden="true"></span>
+      <span lang="fr">Site en construction</span>
+      <span lang="en">Under construction</span>
+    </p>
+
+    <h1><span lang="fr">Logiciel &amp; électronique,<br>du code au circuit</span><span lang="en">Software &amp; electronics,<br>from code to circuit</span><span class="cursor" aria-hidden="true"></span></h1>
+
+    <p class="lead" lang="fr">
+      Studio de développement basé dans le Grand Genève. Notre site est en cours de création&nbsp;;
+      en attendant, retrouvez-nous sur GitHub et LinkedIn.
+    </p>
+    <p class="lead" lang="en">
+      A development studio based in the Greater Geneva area. Our website is under construction;
+      in the meantime, find us on GitHub and LinkedIn.
+    </p>
+
+    <ul class="links">
+      <li>
+        <a href="https://github.com/Beheydt-DEV" aria-label="GitHub – Beheydt-DEV">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          <span>Beheydt-DEV</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/XavierBeheydt" aria-label="GitHub – Xavier Beheydt">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          <span>XavierBeheydt</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.linkedin.com/in/xavier-beheydt/" aria-label="LinkedIn – Xavier Beheydt">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          <span>Xavier Beheydt</span>
+        </a>
+      </li>
+    </ul>
+  </main>
+
+  <footer class="foot">© 2026 Beheydt.DEV · Haute-Savoie, France</footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var titles = {
+        fr: "Beheydt.DEV — Studio logiciel & électronique",
+        en: "Beheydt.DEV — Software & electronics studio"
+      };
+      var buttons = document.querySelectorAll("[data-set-lang]");
+
+      function apply(lang) {
+        root.lang = lang;
+        document.title = titles[lang];
+        for (var i = 0; i < buttons.length; i++) {
+          buttons[i].setAttribute("aria-pressed", String(buttons[i].getAttribute("data-set-lang") === lang));
+        }
+      }
+
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("click", function () {
+          var lang = this.getAttribute("data-set-lang");
+          try { localStorage.setItem("lang", lang); } catch (e) {}
+          apply(lang);
+        });
+      }
+
+      apply(root.lang);
+    })();
+  </script>
+</body>
+</html>
